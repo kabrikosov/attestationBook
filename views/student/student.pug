@@ -1,0 +1,36 @@
+extends ../layout
+block variables
+    -var active = "Student"
+block content
+    a.btn.btn-warning(href="./edit/" + student.id) Редактировать
+    div.container.d-flex.align-items-start
+      span.me-1= student.lastname
+      span.me-1= student.firstname
+      span.me-1= student.middlename
+      span.me-1= student.group_name
+    div#container.container.px-md-1.p-0
+        div#courses
+            for i in [1, 2, 3, 4]
+                if i === 1
+                    span.btn.border.border-end.btn-primary(id=`${i}-course`)= `${i} курс`
+                else
+                    span.btn.border.border-end(id=`${i}-course`)= `${i} курс`
+        div#semesters
+            span(id='fall_semester').btn.border.border-end.btn-primary Осенний семестр
+            span(id='spring_semester').btn.border.border-end Весенний семестр
+        div.container-fluid.p-0.px-md-1
+            div.d-flex.flex-row.justify-content-between.align-items-center.text-center
+                span.col-1.rounded.bg-opacity-75.py-3.d-md-block.d-none №
+                button#discipline.btn.col-5.rounded.bg-opacity-75.py-3.col-md-3 Дисциплина
+                button#mark.btn.rounded.bg-opacity-75.py-3.col-2.col-md-1  Оценка
+                button#date.btn.col-2.rounded.bg-opacity-75.py-3.d-none.d-md-block  Дата
+                button#teacher.btn.rounded.bg-opacity-75.py-3.col-5.col-md-3  Преподаватель
+                button#report.btn.col-1.rounded.bg-opacity-75.py-3.d-none.d-md-block  Форма отчетности
+            div#tableBody
+
+block scripts
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js" defer=true)
+    script(defer=true src='/javascripts/view_student.js')
+    style
+        |input.form-control[type='number'] {max-width: 5rem!important;}
+        |#tableBody {flex: 1; z-index: 3;}

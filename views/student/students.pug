@@ -1,0 +1,18 @@
+extends ../layout
+block variables
+    -var active = "Student"
+block content
+    form.d-flex
+        input#searchInput.form-control(type='search', placeholder='Найти студента', aria-label='Search')
+        button#searchButton.btn.btn-outline-success.mx-2(type='submit') Искать
+        a.btn.btn-outline-secondary(href='./add') Добавить студента
+    div.container-fluid
+        table.table
+            thead
+                tr
+                    th(scope='col') #
+                    th(scope='col') Имя
+                    th(scope='col') Группа
+            tbody#tbody
+block scripts
+    script(src='/javascripts/students.js' defer=true)

@@ -1,0 +1,21 @@
+extends ../layout
+block variables
+    -var active = "Discipline"
+block content
+    a.btn.btn-outline-secondary(href='./add') Добавить дисциплину
+    div#container.container.d-flex.flex-column.align-items-start
+        each discipline in disciplines
+            a.h5.mt-2.link-dark(href='./' + discipline.discipline_id)= discipline.discipline_name
+            each teacher in discipline.teachers
+                each group in teacher.groups
+                    a.badge.bg-success.rounded-pill.mx-2.mt-2.link-light.font-monospace(style="text-decoration: none!important"
+                        role='button' data-bs-placement="top" data-bs-toggle="popover"
+                        data-bs-trigger="hover focus" data-bs-content=`${teacher.lastname} ${teacher.firstname} ${teacher.middlename}`
+                        href='/groups/' + group.student_group_id)
+                        = group.student_group_name
+block scripts
+    script(defer=true)
+        | var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        | var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        |    return new bootstrap.Popover(popoverTriggerEl)
+        | })

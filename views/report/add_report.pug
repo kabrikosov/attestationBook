@@ -1,0 +1,8 @@
+extends ../layout
+block variables
+    -var active = "Report"
+block content
+    h5.h5 Добавить вид отчетности
+    form(action='/reports/add/' method='POST').d-flex.flex-column
+        input.form-control(id='name' name='name' placeholder='Название').my-3
+        button.btn.btn-success Отправить

@@ -1,0 +1,12 @@
+extends ../layout
+block variables
+    -var active = "Report"
+block content
+    a.btn.btn-warning(href="./edit/" + report_type.id) Редактировать
+    div.container.d-flex.align-items-start
+        span.me-1= report_type.name
+    //div.container.d-flex.flex-column.justify-content-center.align-items-start.mt-3
+        each v, k in disciplines_groups
+            h5.h5= k
+            each d in v
+                a.ms-3.link-secondary(href='/groups/' + d.student_group_id)= d.student_group_name

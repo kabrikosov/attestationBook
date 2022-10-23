@@ -1,0 +1,14 @@
+extends ../layout
+block variables
+    -var active = "Student"
+block content
+    form.d-flex.flex-column(action='./add', method='POST')
+        input.form-control(type='text', placeholder='Фамилия', name='lastname', id='lastname')
+        input.form-control.mt-3(type='text', placeholder='Имя', name='firstname', id='firstname')
+        input.form-control.mt-3(type='text', placeholder='Отчество', name='middlename', id='middlename')
+        label.mt-3.form-label(for='student_group_id') Группа
+        select.form-select.mt-1(id='student_group_id', name='student_group_id')
+            each group in groups
+                option.form-control(value=group.id)= group.name
+
+        button#submit.mt-3.btn.btn-outline-success(type='submit') Отправить

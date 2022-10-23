@@ -1,0 +1,12 @@
+extends ../layout
+block variables
+    -var active = "Discipline"
+block content
+    div.container-fluid.d-flex.align-items-center.flex-column.p-5
+        form.d-flex.flex-column(action='./add', method='POST')
+            input.form-control(type='text', placeholder='Название', name='name', id='name')
+            select.form-select.mt-3(name='teacher_id', id='teacher_id')
+                option(value="null") Выберите преподавателя
+                each teacher in teachers
+                    option(value=teacher.id)= `${teacher.lastname} ${teacher.firstname} ${teacher.middlename}`
+            button#submit.mt-3.btn.btn-outline-success(type='submit') Отправить

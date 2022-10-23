@@ -1,0 +1,22 @@
+extends ../layout
+block variables
+    -var active = "Student"
+block content
+    form.d-flex.flex-column(action='/students/edit?_method=PUT', method='POST')
+        input(type='hidden', name='id', value=student.id, id='id')
+        input.form-control(type='text', placeholder='Фамилия', name='lastname', id='lastname', value=student.lastname)
+        input.form-control.mt-3(type='text', placeholder='Имя', name='firstname', id='firstname', value=student.firstname)
+        input.form-control.mt-3(type='text', placeholder='Отчество', name='middlename', id='middlename', value=student.middlename)
+        label.mt-3.form-label(for='student_group_id') Группа
+        select.form-select.mt-1(id='student_group_id', name='student_group_id')
+            each group in groups
+                if student.student_group_id === group.id
+                    option.form-control(value=group.id, selected=true)= group.name
+                else
+                    option.form-control(value=group.id)= group.name
+
+        div.input-group.mt-3
+            button#submit.btn.btn-outline-success(type='submit') Сохранить
+            button#delete.ms-3.btn.btn-outline-danger(type='button', data-id=student.id) Удалить
+block scripts
+    script(src='/javascripts/edit_student.js', defer=true)

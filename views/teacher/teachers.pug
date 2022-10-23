@@ -1,0 +1,28 @@
+extends ../layout
+block variables
+    -var active = "Teacher"
+block content
+    form.d-flex
+        input#searchInput.form-control(type='search', placeholder='Найти преподавателя', aria-label='Search')
+        button#searchButton.btn.btn-outline-success.mx-2(type='submit') Искать
+        a.btn.btn-outline-secondary(href='./add') Добавить преподавателя
+    div#container.container
+        //pre= JSON.stringify(teachers, null, 2)
+        each teacher in teachers
+            div.container.d-flex.flex-column.justify-content-center.align-items-start.w-auto
+                a.h5.mt-2.link-dark(href='/teachers/' + teacher.teacher_id)= `${teacher.lastname} ${teacher.firstname} ${teacher.middlename}`
+                    each discipline in teacher.disciplines
+                        div.d-flex.flex-row.align-items-start
+                            each group in discipline.groups
+                                a.badge.bg-success.rounded-pill.mx-2.mt-2.link-light.font-monospace(style="text-decoration: none!important"
+                                    role='button' data-bs-placement="top" data-bs-toggle="popover"
+                                    data-bs-trigger="hover focus" data-bs-content=discipline.discipline_name
+                                    href='/groups/' + group.student_group_id)
+                                    = group.student_group_name
+block scripts
+    script(src='/javascripts/teachers.js' defer=true)
+    script(defer=true)
+        | var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        | var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        |    return new bootstrap.Popover(popoverTriggerEl)
+        | })

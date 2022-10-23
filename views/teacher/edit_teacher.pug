@@ -1,0 +1,31 @@
+extends ../layout
+block variables
+    -var active = "Teacher"
+block content
+    form.d-flex.flex-column.col-8(action='/teachers/edit?_method=PUT', method='POST')
+        input(type='hidden', name='id', value=teacher.id, id='id')
+        input.form-control(type='text', placeholder='Фамилия', name='lastname', id='lastname', value=teacher.lastname)
+        input.form-control.mt-3(type='text', placeholder='Имя', name='firstname', id='firstname', value=teacher.firstname)
+        input.form-control.mt-3(type='text', placeholder='Отчество', name='middlename', id='middlename', value=teacher.middlename)
+        select#selectpicker.selectpicker.mt-3.w-100(multiple=true, name='disciplines')
+            each discipline in teacher.disciplines
+                option(value=discipline.id, selected=!!discipline.selected)= discipline.name
+        div.input-group.mt-3.justify-content-center
+            button#submit.btn.btn-outline-success(type='submit') Сохранить
+            button#delete.ms-3.btn.btn-outline-danger(type='button', data-id=teacher.id) Удалить
+block scripts
+    script(src='/javascripts/edit_teacher.js', defer=true)
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js")
+    script(defer=true)
+        |
+        |const submitClick = () => {
+        |   const picked = $('.selectpicker').val();
+        |   console.log(picked);
+        |   for (let el of document.getElementById('selectpicker').options) {
+        |       el.selected = picked.includes(el.value);
+        |   };
+        |   return true;
+        |}
+        |document.querySelector('form').addEventListener('submit', submitClick);

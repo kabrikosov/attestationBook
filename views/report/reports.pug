@@ -1,0 +1,16 @@
+extends ../layout
+block variables
+    -var active = "Report"
+block content
+    div.container-fluid
+        table.table
+            thead
+                tr
+                    th(scope='col') #
+                    th(scope='col') Имя
+            tbody#tbody
+                each rt in report_types
+                    tr(onclick='location.pathname += (location.pathname.endsWith("/") ? "" : "/") +' + rt.id)
+                        td=report_types.indexOf(rt)+1
+                        td=rt.name
+block scripts

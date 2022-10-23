@@ -1,0 +1,13 @@
+extends ../layout
+block variables
+    -var active = "Group"
+block content
+    form.d-flex.flex-column(action='/groups/edit?_method=PUT', method='POST')
+        input.form-control(type='hidden', placeholder='Название', name='id', id='id', value=group.id)
+        input.form-control(type='text', placeholder='Название', name='name', id='name', value=group.name)
+        div.input-group.mt-3
+            button#submit.btn.btn-outline-success(type='submit') Сохранить
+            button#delete.ms-3.btn.btn-outline-danger(type='button', data-id=group.id) Удалить
+
+block scripts
+    script(src='/javascripts/edit_group.js')

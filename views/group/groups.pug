@@ -1,0 +1,9 @@
+extends ../layout
+block variables
+    -var active = "Group"
+block content
+    div.container.d-flex.flex-column.align-items-center.mb-4
+        h1.h1 Список групп
+        a.btn.btn-outline-secondary(href='./add') Добавить группу
+    each group in groups
+        a.link-dark(href='./'+group.id)= group.name

@@ -1,0 +1,7 @@
+extends ../layout
+block variables
+    -var active = "Group"
+block content
+    form.d-flex.flex-column(action='./add', method='POST')
+        input.form-control(type='text', placeholder='Название', name='name', id='name')
+        button#submit.mt-3.btn.btn-outline-success(type='submit') Отправить

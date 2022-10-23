@@ -1,0 +1,12 @@
+extends ../layout
+block variables
+    -var active = "Group"
+block content
+    h1.h1= group.name
+    a.btn.btn-warning(href='./edit/' + group.id) Редактировать
+    span Список студентов
+    each student in students
+        a.container-fluid.link-dark(href='/students/' + student.id)
+            span= student.lastname
+            span.ms-1= student.firstname
+            span.ms-1= student.middlename

@@ -1,0 +1,16 @@
+extends ../layout
+block variables
+    -var active = "Report"
+block content
+    form#delete(action='/reports/' + report.id + '?_method=DELETE', method='POST').d-none
+    form#edit(action='/reports/edit?_method=PUT' method='POST').d-flex.flex-column.justify-content-center.align-items-center
+        input.form-control(id='name' name='name' placeholder='Название' value=report.name)
+        div.d-flex.flex-row.mt-3
+            button.btn.btn-success(form='edit' type='submit') Отправить
+            button#delbtn.btn.btn-danger.ms-3(form='delete' type='button') Удалить
+
+block scripts
+    script(defer=true)
+        |
+        |document.getElementById('delbtn').onclick = e => document.getElementById('delete').submit();
+        |

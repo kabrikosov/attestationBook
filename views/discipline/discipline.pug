@@ -1,0 +1,26 @@
+extends ../layout
+block variables
+    -var active = "Discipline"
+block content
+    h1.h1= discipline.name
+    a.btn.btn-warning(href='./edit/' + discipline.id) Редактировать
+    div.container-fluid.d-flex.flex-column.align-content-start
+        h3.h3 Список групп:
+        div.container.d-flex.flex-column.ms-1.align-items-start
+            each teacher in teachers
+                //pre=JSON.stringify(teacher, null, 2)
+                a.badge.bg-success.rounded-pill.mx-2.mt-2.link-light.font-monospace.fs-6(style="text-decoration: none!important"
+                    role='button' data-bs-placement="top" data-bs-toggle="popover"
+                    data-bs-trigger="hover focus" data-bs-content=`${teacher.lastname} ${teacher.firstname} ${teacher.middlename}`
+                    href='/groups/' + teacher.student_group_id)
+                    = teacher.name
+                //a.container-fluid.link-dark(href='/students/' + student.id)
+                    span= student.lastname
+                    span.ms-1= student.firstname
+                    span.ms-1= student.middlename
+block scripts
+    script(defer=true)
+        | var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        | var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        |    return new bootstrap.Popover(popoverTriggerEl)
+        | })

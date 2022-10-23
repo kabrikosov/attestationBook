@@ -1,0 +1,22 @@
+extends layout
+block variables
+  -var active = "Home"
+block content
+  div.container-fluid.d-flex.align-items-center.flex-column.px-5
+    //div.container.d-flex.align-items-start
+      //span= student.direction
+      //span= student.lastname
+      //span= student.firstname
+      //span= student.middlename
+    table.table.w-50
+      thead
+        tr
+          th(scope='col') #
+          th(scope='col') Имя
+          th(scope='col') Группа
+      tbody#tbody
+        each student, i in students
+          tr(onclick="window.location = window.origin + '/students/" + student.id + "'")
+            th(scope='row')= i + 1
+            td= `${[student.lastname, student.firstname, student.middlename].filter(e => e!== null).join(' ')}`
+            td= student.group_name
