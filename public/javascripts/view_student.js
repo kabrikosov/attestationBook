@@ -130,20 +130,59 @@ const createRow = (discipline, i) => {
                 .catch(console.warn);
             popover.hide();
         }
-
     }
 
     tr.append(number, d, mark, date, teacher, report);
 
     return tr;
 }
+
+const updateRow = (row, data) => {
+    const [_, d, mark, date, teacher, report] = row.children;
+    const [markInput] = mark.children;
+    const [dateInput] = date.children;
+    d.innerText = data.discipline_name;
+    if (+markInput.value !== +data['mark']) {
+        to(markInput, {value: +data['mark'], duration: 1, snap: {value: 1}});
+    }
+    dateInput.value = parseDate(data?.mark_date)?.toISOString()?.substring(0, 10) || '';
+    teacher.innerText = `${data.teacher_lastname} ${data.teacher_firstname} ${data.teacher_middlename}`;
+    report.innerText = data.report_type_name;
+    if (+data.report_type_id === 4){
+        report.setAttribute('tabIndex', '-5');
+        report.setAttribute('data-bs-toggle', 'popover');
+        report.setAttribute('data-bs-title', 'Название курсовой работы')
+
+        let popover = bootstrap.Popover.getInstance(report);
+        let popoverInput;
+        if (popover) {
+            popoverInput = popover._config.content
+        } else {
+            popoverInput = createTag('input', 'form-control');
+            popover = new bootstrap.Popover(report, {html: true, content: popoverInput, trigger: 'click manual'});
+        }
+
+        popoverInput.value = data.theme || popoverInput.value || "";
+        popoverInput.setAttribute('type', 'text');
+        popoverInput.name = 'theme';
+        popoverInput.onblur = ev => {
+            const object = {theme: ev.target.value, attestation_book_id: data.attestation_book_id};
+            fetch('/api/edit/attestation_book/theme', fetchOptions(object, 'PUT'))
+                .then(resp => resp.json())
+                .catch(console.warn);
+            popover.hide();
+        }
+    }
+
+}
+
 const fillTable = (student) => {
     let elements = disciplines.map(el => ({node: el, x: el.offsetLeft, y: el.offsetTop})); // сохраняю информацию о предыдущем положении
 
     // разобрался с библиотекой, это оказалась GSAP - greenSock Animation Platform.
 
     const order_dis = new Array(student.disciplines?.length || 0);
-    if (!student.disciplines){
+    if (!student.disciplines && disciplines.at(-1)?.tagName.toLowerCase() !== 'h5'){
         let noData = createTag('h5', 'h5')
         noData.innerText = 'Нет данных'
         disciplines.push(noData);
@@ -152,12 +191,16 @@ const fillTable = (student) => {
     } else
     student.disciplines?.forEach((discipline, i) => {
         const dis = disciplines.find(el => +el.dataset.id === discipline.attestation_book_id);
+
         if (!dis){
             disciplines.push(createRow(discipline, i));
             let d = disciplines.at(-1);
             container.append(d);
             elements.push({node: d, x: d.offsetLeft, y: d.offsetTop})
-        } else order_dis[i] = dis;
+        } else {
+            order_dis[i] = dis;
+            updateRow(dis, discipline);
+        }
     })
 
     for (let d = 0; d < order_dis.length && order_dis[d] != null; d++){
