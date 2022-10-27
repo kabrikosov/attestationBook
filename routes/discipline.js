@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {openConnection, groupDisciplineTeacherGroup} = require('../helpers');
+const {isAuthenticated} = require('./isAuth')
 
 router.get("/", (req, res) => {
     const db = openConnection();
@@ -17,7 +18,7 @@ LEFT JOIN student_group sg ON sg.id = sgs.student_group_id
     db.close();
 })
 
-router.get("/add", (req, res) => {
+router.get("/add", isAuthenticated, (req, res) => {
     const db = openConnection();
     const teachers = db.prepare('SELECT * from teacher').all();
     res.render('discipline/add_discipline', {teachers});
@@ -38,7 +39,7 @@ WHERE td.discipline_id = ?`)
     db.close();
 })
 
-router.get('/edit/:disciplineId', (req, res) => {
+router.get('/edit/:disciplineId', isAuthenticated, (req, res) => {
     const db = openConnection();
     const teachers = db.prepare(`SELECT * from teacher`).all();
     const disciplines = db.prepare(`
@@ -57,7 +58,7 @@ LEFT JOIN report_type rt ON sgs.report_type_id = rt.id`).all();
     res.render('discipline/edit_discipline', { disciplines, teachers, groups, allGroups, allReports, disciplineId: req.params?.disciplineId});
 })
 
-router.put('/edit', (req, res) => {
+router.put('/edit', isAuthenticated, (req, res) => {
     const db = openConnection();
     const discipline = JSON.parse(JSON.stringify(req.body));
     const d = db.prepare('UPDATE discipline SET name = @name WHERE id = @discipline_id').run(discipline);
@@ -69,7 +70,7 @@ router.put('/edit', (req, res) => {
 })
 
 
-router.post('/add', (req, res) => {
+router.post('/add', isAuthenticated, (req, res) => {
     const db = openConnection();
     const discipline = JSON.parse(JSON.stringify(req.body), (k, v) => v === "null" ? null : v);
 
@@ -82,13 +83,13 @@ router.post('/add', (req, res) => {
     res.redirect(303, `/disciplines/${lastInsertRowid}`);
 })
 
-router.delete('/deletetd/:tdisciplineId', (req, res) => {
+router.delete('/deletetd/:tdisciplineId', isAuthenticated, (req, res) => {
     const db = openConnection();
     db.prepare('DELETE FROM teacher_discipline WHERE id = ?').run(req.params.tdisciplineId);
     res.sendStatus(200);
 })
 
-router.delete('/delete/:disciplineId', (req, res) => {
+router.delete('/delete/:disciplineId', isAuthenticated, (req, res) => {
     const db = openConnection();
     db.prepare('DELETE FROM discipline WHERE id = ?').run(req.params.disciplineId);
     res.sendStatus(200);

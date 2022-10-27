@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {openConnection} = require('../helpers');
-
-/*    REST    */
-
-/**************/
+const {isAuthenticated} = require('./isAuth')
 
 router.get("/", (req, res) => {
     const db = openConnection();
@@ -13,7 +10,7 @@ router.get("/", (req, res) => {
     db.close();
 })
 
-router.put('/edit', (req, res) => {
+router.put('/edit', isAuthenticated, (req, res) => {
     const db = openConnection();
     const group = JSON.parse(JSON.stringify(req.body));
     const g = db.prepare('UPDATE student_group SET name = @name WHERE id = @id').run(group);
@@ -22,7 +19,7 @@ router.put('/edit', (req, res) => {
 
 })
 
-router.get("/add", (req, res) => {
+router.get("/add", isAuthenticated, (req, res) => {
     res.render('group/add_group');
 })
 
@@ -34,13 +31,13 @@ router.get("/:groupId", (req, res) => {
     db.close();
 })
 
-router.get('/edit/:groupId', (req, res) => {
+router.get('/edit/:groupId', isAuthenticated, (req, res) => {
     const db = openConnection();
     const group = db.prepare('SELECT * FROM student_group WHERE id = ?').get([req.params?.groupId]);
     res.render('group/edit_group', { group });
 })
 
-router.post('/add', (req, res) => {
+router.post('/add', isAuthenticated, (req, res) => {
     const group = JSON.parse(JSON.stringify(req.body));
     const db = openConnection();;
     const g = db.prepare(`INSERT INTO student_group (name) VALUES (@name)`)
@@ -48,7 +45,7 @@ router.post('/add', (req, res) => {
     res.redirect(303, `/groups/${g?.lastInsertRowid}`);
 })
 
-router.delete('/delete/:groupId', (req, res) => {
+router.delete('/delete/:groupId', isAuthenticated, (req, res) => {
     const db = openConnection();
     db.prepare('DELETE FROM student_group WHERE id = ?').run(req.params.groupId);
     res.sendStatus(200);

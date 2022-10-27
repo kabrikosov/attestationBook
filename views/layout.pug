@@ -12,18 +12,24 @@ html
     body
         nav.navbar.navbar-expand-lg.navbar-light.bg-light
             div.container-fluid
-                a.navbar-brand(href="/") Attestation book
+                a.navbar-brand(href="/") Зачетная книжка
                 button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNavAltMarkup",
                     aria-controls="navbarNavAltMarkup", aria-expanded="false", aria-label="Toggle navigation")
                     span.navbar-toggler-icon
-                div#navbarNavAltMarkup.collapse.navbar-collapse
-                    div.navbar-nav
-                        a(class=`nav-link ${active === 'Home' ? 'active' : ''}`, aria-current="page", href="/") Home
-                        a(class=`nav-link ${active === 'Student' ? 'active' : ''}`, href='/students/') Students
-                        a(class=`nav-link ${active === 'Group' ? 'active' : ''}`, href='/groups/') Groups
-                        a(class=`nav-link ${active === 'Teacher' ? 'active' : ''}`, href='/teachers/') Teachers
-                        a(class=`nav-link ${active === 'Discipline' ? 'active' : ''}`, href='/disciplines/') Disciplines
-                        a(class=`nav-link ${active === 'Report' ? 'active' : ''}`, href='/reports/') Report types
+                div#navbarNavAltMarkup.collapse.navbar-collapse.justify-content-between.align-items-center
+                    div.navbar-nav.align-items-lg-center.align-items-start
+                        a(class=`nav-link ${active === 'Home' ? 'active' : ''}`, aria-current="page", href="/").text-center Главная
+                        a(class=`nav-link ${active === 'Student' ? 'active' : ''}`, href='/students/').text-center Студенты
+                        a(class=`nav-link ${active === 'Group' ? 'active' : ''}`, href='/groups/').text-center Группы
+                        a(class=`nav-link ${active === 'Teacher' ? 'active' : ''}`, href='/teachers/').text-center Преподаватели
+                        a(class=`nav-link ${active === 'Discipline' ? 'active' : ''}`, href='/disciplines/').text-center Дисциплины
+                        a(class=`nav-link ${active === 'Report' ? 'active' : ''}`, href='/reports/').text-center Формы отчетности
+                    div.d-flex.flex-row.align-items-center.justify-content-between.ms-lg-3
+                        if username
+                            span #{username}
+                            a(href="/logout" class="navbar-brand").mx-lg-5 Выйти
+                        else
+                            a(href="/login" class="navbar-brand").mx-lg-5 Войти
         div.container-fluid.d-flex.align-items-center.flex-column.p-md-5.py-5.px-sm-1.h-100
             block content
 

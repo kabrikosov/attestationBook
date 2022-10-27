@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const {openConnection, groupDisciplineTeacherGroup, groupTeacherDisciplineGroup, asTransaction, prepareStudent} = require('../helpers');
+const {isAuthenticated} = require('./isAuth')
 
-router.delete('/edit/student_group_session', (req, res) => {
+router.delete('/edit/student_group_session', isAuthenticated, (req, res) => {
     const db = openConnection();
     const dbreq = db.prepare('DELETE FROM student_group_session WHERE id = @student_group_session_id').run(req.body)
     console.log(dbreq)
     res.sendStatus(200);
 })
 
-router.put('/edit/attestation_book/theme', (req, res) =>{
+router.put('/edit/attestation_book/theme', isAuthenticated, (req, res) =>{
     const db = openConnection();
     const body = req.body;
 
@@ -21,7 +22,7 @@ WHERE id = @attestation_book_id`).run(body);
     res.sendStatus(200);
 })
 
-router.put('/edit/student_group_session', (req, res) =>{
+router.put('/edit/student_group_session', isAuthenticated, (req, res) =>{
     const db = openConnection();
     const body = req.body;
     const sgs = {
@@ -43,7 +44,7 @@ WHERE id = @id`).run(sgs); // {changes: x, lastInsertRowid: 0}
     res.sendStatus(200);
 })
 
-router.put('/edit/attestation_book/mark', (req, res) =>{
+router.put('/edit/attestation_book/mark', isAuthenticated, (req, res) =>{
     const db = openConnection();
     const body = req.body;
     const sgs = {
@@ -57,7 +58,7 @@ WHERE id = @id`).run(sgs)
     res.sendStatus(200);
 });
 
-router.put('/edit/student_group_session/date', (req, res) =>{
+router.put('/edit/student_group_session/date', isAuthenticated, (req, res) =>{
     const db = openConnection();
     const body = req.body;
     const sgs = {
@@ -70,7 +71,7 @@ WHERE (id = (SELECT ab.student_group_session_id FROM attestation_book ab WHERE a
     res.sendStatus(200);
 })
 
-router.post('/add/student_group_session', (req, res) => {
+router.post('/add/student_group_session', isAuthenticated, (req, res) => {
     const db = openConnection();
     const body = req.body;
 

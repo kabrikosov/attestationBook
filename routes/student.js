@@ -1,19 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const {openConnection} = require('../helpers');
+const {isAuthenticated} = require('./isAuth');
 
 router.get("/", (req, res) => {
     res.render('student/students');
 })
 
-router.get("/add", (req, res) => {
+router.get("/add", isAuthenticated, (req, res) => {
     const db = openConnection();
     const groups = db.prepare('SELECT * from student_group').all();
     res.render('student/add_student', {groups});
     db.close();
 })
 
-router.put('/edit', (req, res) => {
+router.put('/edit', isAuthenticated, (req, res) => {
     const student = JSON.parse(JSON.stringify(req.body));
     const db = openConnection();
     const s = db.prepare(`UPDATE student SET lastname = @lastname, firstname = @firstname, middlename = @middlename, student_group_id = @student_group_id WHERE id = @id`)
@@ -22,7 +23,7 @@ router.put('/edit', (req, res) => {
     res.redirect(303, `/students/${student.id}`);
 })
 
-router.get("/edit/:studentId", (req, res) => {
+router.get("/edit/:studentId", isAuthenticated, (req, res) => {
     const db = openConnection();
     const groups = db.prepare('SELECT * from student_group').all();
     const student = db.prepare('SELECT * FROM student s WHERE s.id = ?').get([req.params.studentId]);
@@ -39,7 +40,7 @@ router.get("/:studentId", (req, res) => {
     res.render('student/student', {student});
 })
 
-router.post('/add', (req, res) => {
+router.post('/add', isAuthenticated, (req, res) => {
     const student = JSON.parse(JSON.stringify(req.body));
     const db = openConnection();
     const s = db.prepare(`INSERT INTO student (lastname, firstname, middlename, student_group_id) VALUES (@lastname, @firstname, @middlename, @student_group_id)`)
@@ -47,7 +48,7 @@ router.post('/add', (req, res) => {
     res.redirect(`/students/${s.lastInsertRowid}`);
 })
 
-router.delete('/delete/:studentId', (req, res) => {
+router.delete('/delete/:studentId', isAuthenticated, (req, res) => {
     const db = openConnection();
     db.prepare('DELETE FROM student WHERE id = ?').run(req.params.studentId);
     res.sendStatus(200);

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 require("core-js/actual/array/group-by");
 const {openConnection, groupTeacherDisciplineGroup, asTransaction} = require('../helpers');
-
+const {isAuthenticated} = require('./isAuth')
 /*    REST    */
 /**************/
 
@@ -23,7 +23,7 @@ LEFT JOIN student_group sg ON sg.id = sgs.student_group_id
     db.close();
 })
 
-router.get("/add", (req, res) => {
+router.get("/add", isAuthenticated, (req, res) => {
     const db = openConnection();
     const disciplines = db.prepare('SELECT * from discipline').all();
     console.dir(disciplines);
@@ -47,7 +47,7 @@ WHERE t.id = ?`)
     db.close();
 })
 
-router.get('/edit/:teacherId', (req, res) => {
+router.get('/edit/:teacherId', isAuthenticated, (req, res) => {
     const db = openConnection();
     const teacher = db.prepare('SELECT * FROM teacher t WHERE t.id = ?').get([req.params?.teacherId]);
     teacher.disciplines = db.prepare(`
@@ -59,7 +59,7 @@ GROUP BY d.id`)
     res.render('teacher/edit_teacher', {teacher});
 })
 
-router.put('/edit', (req, res) => {
+router.put('/edit', isAuthenticated, (req, res) => {
     const db = openConnection();
     const teacher = JSON.parse(JSON.stringify(req.body));
     const t = db.prepare('UPDATE teacher SET lastname = @lastname, firstname = @firstname, middlename = @middlename WHERE id = @id').run(teacher);
@@ -83,7 +83,7 @@ router.put('/edit', (req, res) => {
 })
 
 
-router.post('/add', (req, res) => {
+router.post('/add', isAuthenticated, (req, res) => {
     const db = openConnection();
     const teacher = JSON.parse(JSON.stringify(req.body));
     teacher.disciplines = Array.isArray(teacher.disciplines) ? teacher.disciplines : [teacher.disciplines];
@@ -101,13 +101,13 @@ router.post('/add', (req, res) => {
     res.redirect(303, `/teachers/${teacher.id}`);
 })
 
-router.delete('/delete/:teacherId', (req, res) => {
+router.delete('/delete/:teacherId', isAuthenticated, (req, res) => {
     const db = openConnection();
     db.prepare('DELETE FROM teacher WHERE id = ?').run(req.params.teacherId);
     res.sendStatus(200);
 })
 
-router.delete('/delete', (req, res) => {
+router.delete('/delete', isAuthenticated, (req, res) => {
     const db = openConnection();
     const body = JSON.parse(req.body);
     db.prepare('DELETE FROM teacher WHERE id = ?').run(body.teacher_id);
