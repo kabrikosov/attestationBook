@@ -12,7 +12,7 @@ passport.use('register', new LocalStrategy({
 
     (req, username, password, done) => { // done - обратный вызов (после регистрации в вызывающий метод будет возвращена информация об успешной/неуспешной операции)
         const db = openConnection();
-        const user = done(db.prepare(`SELECT * FROM user WHERE username = ?`).get(username));
+        const user = db.prepare(`SELECT * FROM user WHERE username = ?`).get(username);
         if (user)
             return done(null, false, req.flash("message", "Пользователь с данным логином существует"));
 
